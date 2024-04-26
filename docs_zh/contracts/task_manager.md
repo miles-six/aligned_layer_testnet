@@ -1,0 +1,9 @@
+ ## AlignedLayerTaskManager: 
+
+该[合约](https://github.com/yetanotherco/aligned_layer_testnet/blob/main/contracts/src/AlignedLayerTaskManager.sol)的构造函数接受两个参数：类型为`IBLSRegistryCoordinatorWithIndices` 的 `_registryCoordinator` 和类型为 `uint32` 的 `_taskResponseWindowBlock`。
+
+[createNewTask函数](https://github.com/yetanotherco/aligned_layer_testnet/blob/main/contracts/src/AlignedLayerTaskManager.sol#L83) 接受 `proof`、`pubInput`、`verifierId`、`quorumThresholdPercentage` 和 `quorumNumbers`作为参数。首先创建一个新的任务结构体，并将当前区块号赋值给[taskCreatedBlock]( https://github.com/yetanotherco/aligned_layer_testnet/blob/main/contracts/src/AlignedLayerTaskManager.sol#L95)。然后计算任务结构体的哈希，并使用当前的 `latestTaskNum` 作为键，存储在[allTaskHashes]( https://github.com/yetanotherco/aligned_layer_testnet/blob/main/contracts/src/AlignedLayerTaskManager.sol#L100)映射中。之后，发出 [NewTaskCreated event](https://github.com/yetanotherco/aligned_layer_testnet/blob/main/contracts/src/AlignedLayerTaskManager.sol#L101)带有 `latestTaskNum` 和 `newTask` 结构体，并最终增加 `latestTaskNum`。
+
+[respondToTask function](https://github.com/yetanotherco/aligned_layer_testnet/blob/main/contracts/src/AlignedLayerTaskManager.sol#L106)响应已存在的任务。它接受 `task`、`taskResponse` 和 `nonSignerStakesAndSignature` 作为参数。首先，它检查任务是否有效、尚未得到响应，并且响应是及时的。然后根据 `taskResponse` 计算一个 [message](https://github.com/yetanotherco/aligned_layer_testnet/blob/main/contracts/src/AlignedLayerTaskManager.sol#L134)，后续检查 BLS 签名。之后，函数[检查](https://github.com/yetanotherco/aligned_layer_testnet/blob/main/contracts/src/AlignedLayerTaskManager.sol#L148)签名者是否至少拥有每个法定人数的阈值百分比。如果满足阈值百分比条件，函数[updates the storage](https://github.com/yetanotherco/aligned_layer_testnet/blob/main/contracts/src/AlignedLayerTaskManager.sol#L165)与 `taskResponse` 和 `taskResponseMetadata`。最后，它发出一个事件[TaskResponded](https://github.com/yetanotherco/aligned_layer_testnet/blob/main/contracts/src/AlignedLayerTaskManager.sol#L170) 表示任务响应已成功记录。
+
+
